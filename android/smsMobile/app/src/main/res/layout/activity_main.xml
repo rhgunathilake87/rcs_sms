@@ -22,6 +22,36 @@
         android:text="Loading messages..."
         android:layout_marginBottom="8dp" />
 
+    <LinearLayout
+        android:id="@+id/phoneNumberSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your mobile number"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/mobileNumberInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. 0771234567"
+            android:inputType="phone"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/saveMobileNumberButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save mobile number" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/smsRecyclerView"
         android:layout_width="match_parent"

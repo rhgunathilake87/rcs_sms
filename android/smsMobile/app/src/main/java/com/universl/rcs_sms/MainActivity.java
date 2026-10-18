@@ -22,6 +22,12 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import android.content.SharedPreferences;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private SmsAdapter smsAdapter;
     private final List<SmsItem> smsList = new ArrayList<>();
     private VerificationApiClient apiClient = new VerificationApiClient();
+    private EditText mobileNumberInput;
+    private Button saveMobileNumberButton;
+    private LinearLayout phoneNumberSection;
+
+    private static final String PREFS_NAME = "SmsVerifierPrefs";
+    private static final String KEY_RECIPIENT_NUMBER = "recipient_number";
 
     private final ActivityResultLauncher<String> smsPermissionLauncher =
             registerForActivityResult(
@@ -50,8 +62,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestPhoneNumberPermission();
+        //requestPhoneNumberPermission();
         setContentView(R.layout.activity_main);
+
+        mobileNumberInput = findViewById(R.id.mobileNumberInput);
+        saveMobileNumberButton = findViewById(R.id.saveMobileNumberButton);
+        phoneNumberSection = findViewById(R.id.phoneNumberSection);
+
+        SharedPreferences prefs =
+                getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        String savedNumber = prefs.getString(KEY_RECIPIENT_NUMBER, null);
+
+        if (savedNumber != null) {
+            mobileNumberInput.setText(savedNumber);
+            phoneNumberSection.setVisibility(View.GONE);
+        }
+
+        saveMobileNumberButton.setOnClickListener(v -> saveMobileNumber());
 
         smsRecyclerView = findViewById(R.id.smsRecyclerView);
         inboxMessage = findViewById(R.id.inboxMessage);
@@ -129,6 +157,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void saveMobileNumber() {
+        String enteredNumber = mobileNumberInput.getText()
+                .toString()
+                .trim();
+
+        try {
+            String normalizedNumber =
+                    HashGenerator.normalizePhone(enteredNumber);
+
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    .edit()
+                    .putString(KEY_RECIPIENT_NUMBER, normalizedNumber)
+                    .apply();
+
+            mobileNumberInput.setText(normalizedNumber);
+            phoneNumberSection.setVisibility(View.GONE);
+
+            Toast.makeText(
+                    this,
+                    "Mobile number saved",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } catch (IllegalArgumentException e) {
+            mobileNumberInput.setError(
+                    "Enter a valid mobile number"
+            );
+        }
+    }
+
     private String getPhoneNumberFromSim() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(
@@ -173,63 +231,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void verifySms(SmsItem sms) {
-        String recipient = getPhoneNumberFromSim();
+        SharedPreferences prefs =
+                getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        if (recipient == null || recipient.trim().isEmpty()) {
+        String recipient = prefs.getString(KEY_RECIPIENT_NUMBER, null);
+
+        if (recipient == null || recipient.isEmpty()) {
+            phoneNumberSection.setVisibility(View.VISIBLE);
+
             Toast.makeText(
                     this,
-                    "Could not detect your phone number. Please enter it manually.",
-                    Toast.LENGTH_LONG
+                    "Please save your mobile number first",
+                    Toast.LENGTH_SHORT
             ).show();
+
             return;
         }
 
         sms.setVerificationStatus("CHECKING");
         smsAdapter.notifyDataSetChanged();
 
-        try {
-            String hash = HashGenerator.generateMessageHash(
-                    recipient,
-                    sms.getBody(),
-                    sms.getTimestamp()
-            );
+        String hash = HashGenerator.generateMessageHash(
+                recipient,
+                sms.getBody(),
+                sms.getTimestamp()
+        );
 
-            apiClient.verifyHash(
-                    hash,
-                    recipient,
-                    new VerificationApiClient.Callback() {
-                        @Override
-                        public void onSuccess(
-                                String status,
-                                String institutionId,
-                                String institutionName,
-                                String logoUrl,
-                                boolean institutionVerified
-                        ) {
-                            sms.setVerificationStatus(status);
-
-                            sms.setInstitutionDetails(
-                                    institutionId,
-                                    institutionName,
-                                    logoUrl,
-                                    institutionVerified
-                            );
-
-                            smsAdapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            sms.setVerificationStatus("UNAVAILABLE - retry later");
-                            smsAdapter.notifyDataSetChanged();
-                        }
+        apiClient.verifyHash(hash, recipient,
+                new VerificationApiClient.Callback() {
+                    @Override
+                    public void onSuccess(
+                            String status,
+                            String institutionId,
+                            String institutionName,
+                            String logoUrl,
+                            boolean institutionVerified
+                    ) {
+                        sms.setVerificationStatus(status);
+                        sms.setInstitutionDetails(
+                                institutionId,
+                                institutionName,
+                                logoUrl,
+                                institutionVerified
+                        );
+                        smsAdapter.notifyDataSetChanged();
                     }
-            );
 
-        } catch (Exception e) {
-            sms.setVerificationStatus("UNAVAILABLE - retry later");
-            smsAdapter.notifyDataSetChanged();
-        }
+                    @Override
+                    public void onError(String message) {
+                        sms.setVerificationStatus(
+                                "UNAVAILABLE - retry later"
+                        );
+                        smsAdapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     @Override

@@ -18,8 +18,11 @@ import java.util.concurrent.Executors;
 public class VerificationApiClient {
 
     // Replace this with your team's real HTTPS endpoint.
-    private static final String API_URL =
-            "https://asia-south1-rcs-sms-e803f.cloudfunctions.net/api/verify-hash";
+    private static final String API_BASE_URL =
+            "https://asia-south1-rcs-sms-e803f.cloudfunctions.net/api";
+
+    private static final String VERIFY_HASH_URL =
+            API_BASE_URL + "/verify-hash";
 
     private static final int CONNECT_TIMEOUT_MS = 10000;
     private static final int READ_TIMEOUT_MS = 10000;
@@ -51,7 +54,7 @@ public class VerificationApiClient {
             HttpURLConnection connection = null;
 
             try {
-                URL url = new URL(API_URL);
+                URL url = new URL(VERIFY_HASH_URL);
                 connection =
                         (HttpURLConnection) url.openConnection();
 

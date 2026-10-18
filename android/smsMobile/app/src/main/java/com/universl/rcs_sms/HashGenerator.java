@@ -1,76 +1,78 @@
 package com.universl.rcs_sms;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.util.Locale;
 
 public final class HashGenerator {
 
+    private static final String VERSION = "v1";
+    private static final String DEFAULT_COUNTRY_CODE = "94";
+
     private HashGenerator() {
-        // Utility class: no instances needed.
     }
 
-    /**
-     * Builds a deterministic payload for hashing.
-     *
-     * This is a prototype format. The backend must use
-     * exactly the same field order and separators.
-     */
-    public static String buildPayload(
-            String recipient,
-            String messageBody,
-            long timestamp
-    ) {
-        if (recipient == null || recipient.isEmpty()) {
+    public static String normalizePhone(String raw) {
+        if (raw == null) {
+            throw new IllegalArgumentException("Phone number cannot be null");
+        }
+
+        String trimmed = raw.trim();
+        String digits = trimmed.replaceAll("[^0-9]", "");
+
+        final String e164;
+
+        if (trimmed.startsWith("+")) {
+            e164 = "+" + digits;
+        } else if (digits.startsWith("00")) {
+            e164 = "+" + digits.substring(2);
+        } else if (digits.startsWith("0")) {
+            e164 = "+" + DEFAULT_COUNTRY_CODE
+                    + digits.substring(1);
+        } else if (digits.startsWith(DEFAULT_COUNTRY_CODE)
+                && digits.length() > 9) {
+            e164 = "+" + digits;
+        } else {
+            e164 = "+" + DEFAULT_COUNTRY_CODE + digits;
+        }
+
+        if (!e164.matches("^\\+\\d{8,15}$")) {
             throw new IllegalArgumentException(
-                    "Recipient cannot be empty"
+                    "Invalid phone number: " + raw
             );
         }
 
-        if (messageBody == null) {
+        return e164;
+    }
+
+    public static String normalizeBody(String body) {
+        if (body == null) {
             throw new IllegalArgumentException(
                     "Message body cannot be null"
             );
         }
 
-        return "v1\n"
-                + recipient + "\n"
-                + timestamp + "\n"
-                + messageBody;
+        return Normalizer.normalize(body, Normalizer.Form.NFC)
+                .replaceAll("\\r\\n?", "\n")
+                .trim();
     }
 
-    /**
-     * Calculates a SHA-256 hash and returns 64 lowercase
-     * hexadecimal characters.
-     */
+    public static String buildPayload(String recipient, String body) {
+        return VERSION + "|"
+                + normalizePhone(recipient) + "|"
+                + normalizeBody(body);
+    }
+
     public static String sha256(String input) {
-        if (input == null) {
-            throw new IllegalArgumentException(
-                    "Input cannot be null"
-            );
-        }
-
         try {
-            MessageDigest digest =
-                    MessageDigest.getInstance("SHA-256");
+            byte[] bytes = MessageDigest.getInstance("SHA-256")
+                    .digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
-            byte[] hashBytes = digest.digest(
-                    input.getBytes(StandardCharsets.UTF_8)
-            );
+            StringBuilder hex = new StringBuilder(bytes.length * 2);
 
-            StringBuilder hex = new StringBuilder(
-                    hashBytes.length * 2
-            );
-
-            for (byte b : hashBytes) {
-                hex.append(
-                        String.format(
-                                Locale.ROOT,
-                                "%02x",
-                                b & 0xff
-                        )
-                );
+            for (byte b : bytes) {
+                hex.append(String.format(Locale.ROOT, "%02x", b & 0xff));
             }
 
             return hex.toString();
@@ -82,20 +84,12 @@ public final class HashGenerator {
         }
     }
 
-    /**
-     * Convenience method for generating the message hash.
-     */
     public static String generateMessageHash(
             String recipient,
-            String messageBody,
+            String body,
             long timestamp
     ) {
-        String payload = buildPayload(
-                recipient,
-                messageBody,
-                timestamp
-        );
-
-        return sha256(payload);
+        // Timestamp is deliberately excluded in Hash Contract v1.
+        return sha256(buildPayload(recipient, body));
     }
 }

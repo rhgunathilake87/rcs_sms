@@ -3394,6 +3394,7 @@ int id matrix 0x7f080110
 int id message 0x7f080111
 int id middle 0x7f080112
 int id mini 0x7f080113
+int id mobileNumberInput 0x7f080206
 int id month_grid 0x7f080114
 int id month_navigation_bar 0x7f080115
 int id month_navigation_fragment_toggle 0x7f080116
@@ -3474,6 +3475,7 @@ int id path 0x7f080160
 int id pathRelative 0x7f080161
 int id peekHeight 0x7f080162
 int id percent 0x7f080163
+int id phoneNumberSection 0x7f080207
 int id pin 0x7f080164
 int id pooling_container_listener_holder_tag 0x7f080165
 int id position 0x7f080166
@@ -3492,6 +3494,7 @@ int id right_icon 0x7f080172
 int id right_side 0x7f080173
 int id rounded 0x7f080174
 int id row_index_key 0x7f080175
+int id saveMobileNumberButton 0x7f080208
 int id save_non_transition_alpha 0x7f080176
 int id save_overlay_view 0x7f080177
 int id sawtooth 0x7f080178

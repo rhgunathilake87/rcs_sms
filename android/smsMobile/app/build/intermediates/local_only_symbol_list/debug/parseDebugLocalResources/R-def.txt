@@ -16,6 +16,9 @@ id institutionId
 id institutionLogoUrl
 id institutionName
 id institutionVerified
+id mobileNumberInput
+id phoneNumberSection
+id saveMobileNumberButton
 id smsBody
 id smsDate
 id smsRecyclerView
