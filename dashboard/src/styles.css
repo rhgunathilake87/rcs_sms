@@ -347,3 +347,71 @@ input:focus, textarea:focus, select:focus { border-color: var(--green); outline:
   .live-dot { animation: none; }
   .ttl-fill { transition: none; }
 }
+
+/* ---------- guest mode & Android app page ---------- */
+
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.plain-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.plain-fieldset:disabled input { opacity: 0.7; }
+
+.demo-banner {
+  max-width: 1120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  background: var(--amber-soft);
+  color: var(--ink);
+  border-left: 4px solid var(--amber);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 28px;
+  font-size: 0.92rem;
+}
+
+.app-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; align-items: start; }
+
+.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+.steps li { counter-increment: step; position: relative; padding-left: 48px; max-width: 62ch; }
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 700;
+}
+.steps h2 { margin-bottom: 4px; }
+.steps p { color: var(--muted); }
+.steps .link-btn.mono { font-size: 0.82rem; overflow-wrap: anywhere; text-align: left; }
+
+.download-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  position: sticky;
+  top: 36px;
+}
+.qr { width: 220px; height: 220px; border-radius: 6px; background: #fff; padding: 8px; }
+.qr-empty { display: grid; place-items: center; }
+.btn-block { align-self: stretch; text-align: center; text-decoration: none; }
+
+@media (max-width: 960px) {
+  .app-grid { grid-template-columns: 1fr; }
+  .download-card { position: static; max-width: 340px; }
+}

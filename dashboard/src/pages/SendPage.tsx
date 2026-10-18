@@ -4,15 +4,21 @@ import { PhonePreview } from "../components/PhonePreview";
 import { useReadySession } from "../session";
 import { formatClock, formatPhone, smsSegments } from "../util";
 
-const TTL_OPTIONS = [
+const ALL_TTL_OPTIONS = [
   { seconds: 60, label: "1 minute" },
   { seconds: 300, label: "5 minutes" },
   { seconds: 900, label: "15 minutes" },
   { seconds: 3600, label: "1 hour" },
 ];
+const GUEST_MAX_TTL = 900;
+const GUEST_MAX_LENGTH = 320;
 
 export function SendPage() {
-  const { institution } = useReadySession();
+  const { institution, role } = useReadySession();
+  const isGuest = role === "guest";
+  const ttlOptions = isGuest ? ALL_TTL_OPTIONS.filter((o) => o.seconds <= GUEST_MAX_TTL) : ALL_TTL_OPTIONS;
+  const maxLength = isGuest ? GUEST_MAX_LENGTH : 1600;
+
   const [recipient, setRecipient] = useState("");
   const [message, setMessage] = useState("");
   const [ttlSeconds, setTtlSeconds] = useState(300);
@@ -75,6 +81,7 @@ export function SendPage() {
               onChange={(e) => setRecipient(e.target.value)}
               required
             />
+            {isGuest && <small className="field-note">Use your own number to try it on your phone.</small>}
           </label>
 
           <label className="field">
@@ -84,7 +91,13 @@ export function SendPage() {
                 Insert sample OTP
               </button>
             </span>
-            <textarea rows={5} value={message} onChange={(e) => setMessage(e.target.value)} required maxLength={1600} />
+            <textarea
+              rows={5}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              maxLength={maxLength}
+            />
             <small className="field-note">
               {[...message].length} characters, {seg.parts} SMS part{seg.parts === 1 ? "" : "s"}
               {seg.unicode ? " (Unicode: 70 characters per SMS)" : ""}
@@ -94,7 +107,7 @@ export function SendPage() {
           <label className="field">
             <span>Verification window</span>
             <select value={ttlSeconds} onChange={(e) => setTtlSeconds(Number(e.target.value))}>
-              {TTL_OPTIONS.map((o) => (
+              {ttlOptions.map((o) => (
                 <option key={o.seconds} value={o.seconds}>
                   {o.label}
                 </option>
@@ -121,7 +134,8 @@ export function SendPage() {
                 <dd>
                   {result.sms.status === "NOT_CONFIGURED" ? (
                     <>
-                      No SMS gateway is connected yet. Send this exact text to the recipient yourself.{" "}
+                      No SMS gateway is connected yet. Send this exact text to the recipient's phone by SMS, or
+                      paste it into the app's Test tab.{" "}
                       <button type="button" className="link-btn" onClick={copyText}>
                         {copied ? "Copied" : "Copy message text"}
                       </button>

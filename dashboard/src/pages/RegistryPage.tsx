@@ -19,7 +19,8 @@ type Filter = "all" | "active" | "expired";
 const ms = (t: unknown): number | null => (t instanceof Timestamp ? t.toMillis() : null);
 
 export function RegistryPage() {
-  const { institution } = useReadySession();
+  const { institution, role, user } = useReadySession();
+  const isGuest = role === "guest";
   const now = useNow(1000);
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState("");
@@ -27,9 +28,10 @@ export function RegistryPage() {
   const [copiedHash, setCopiedHash] = useState("");
 
   useEffect(() => {
+    // Admins see their whole institution; guests see only the messages they sent.
     const q = query(
       collection(db, "messageRegistry"),
-      where("institutionId", "==", institution.id),
+      isGuest ? where("createdByUid", "==", user.uid) : where("institutionId", "==", institution.id),
       orderBy("createdAt", "desc"),
       limit(100)
     );
@@ -56,7 +58,7 @@ export function RegistryPage() {
       },
       (err) => setError(`Can't load the registry: ${err.message}`)
     );
-  }, [institution.id]);
+  }, [institution.id, isGuest, user.uid]);
 
   const shown = useMemo(() => {
     if (!entries) return [];
@@ -79,6 +81,7 @@ export function RegistryPage() {
         <h1>Registry</h1>
         <p>
           <span className="live-dot" aria-hidden="true" /> Updates live as messages are sent and checked.{" "}
+          {isGuest && "You see only the messages sent from this browser. "}
           {entries && (
             <>
               {activeCount} active of the latest {entries.length}, with {totalChecks} phone check

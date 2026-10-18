@@ -5,7 +5,8 @@ import { Seal } from "../components/Seal";
 import { useReadySession } from "../session";
 
 export function InstitutionPage() {
-  const { institution } = useReadySession();
+  const { institution, role } = useReadySession();
+  const readOnly = role === "guest";
   const [name, setName] = useState(institution.name);
   const [senderId, setSenderId] = useState(institution.senderId);
   const [logoUrl, setLogoUrl] = useState(institution.logoUrl);
@@ -58,7 +59,10 @@ export function InstitutionPage() {
         </div>
       </div>
 
+      {readOnly && <p className="muted">Demo mode: the bank profile can only be changed by a bank admin.</p>}
+
       <form onSubmit={save} className="stack narrow">
+        <fieldset disabled={readOnly} className="plain-fieldset stack">
         <label className="field">
           <span>Display name</span>
           <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={60} />
@@ -75,9 +79,12 @@ export function InstitutionPage() {
         </label>
         {error && <p className="error" role="alert">{error}</p>}
         {status && <p className="success" role="status">{status}</p>}
-        <button className="btn btn-primary" disabled={busy}>
-          {busy ? "Saving…" : "Save changes"}
-        </button>
+        {!readOnly && (
+          <button className="btn btn-primary" disabled={busy}>
+            {busy ? "Saving…" : "Save changes"}
+          </button>
+        )}
+        </fieldset>
       </form>
 
       <div className="note">

@@ -7,6 +7,13 @@ const projectId = env.VITE_FIREBASE_PROJECT_ID || "demo-verified-sms";
 
 export const USING_EMULATORS = env.VITE_USE_EMULATORS === "true";
 
+/** Guest mode: visitors enter the dashboard without a login (Firebase anonymous sign-in). */
+export const GUEST_MODE = env.VITE_GUEST_MODE !== "false";
+export const GUEST_INSTITUTION_ID: string = env.VITE_GUEST_INSTITUTION_ID || "demo-bank";
+
+/** Google Drive share link for the Android app APK. Empty = no download offered. */
+export const APK_URL: string = (env.VITE_APK_URL || "").trim();
+
 const app = initializeApp({
   apiKey: env.VITE_FIREBASE_API_KEY || "demo-api-key",
   authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,

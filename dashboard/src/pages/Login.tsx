@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, USING_EMULATORS } from "../firebase";
 
-export function Login() {
+export function Login({ onBack, notice }: { onBack?: () => void; notice?: string }) {
   const [email, setEmail] = useState(USING_EMULATORS ? "admin@demobank.lk" : "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,7 +18,7 @@ export function Login() {
       const code = (err as { code?: string }).code ?? "";
       setError(
         code.includes("network")
-          ? "Can't reach the sign-in service. Check that the emulators are running."
+          ? "Can't reach the sign-in service. Check your connection."
           : "That email and password don't match a bank admin account."
       );
       setBusy(false);
@@ -28,10 +28,10 @@ export function Login() {
   return (
     <main className="login">
       <div className="login-panel">
-        <h1 className="login-title">Verified SMS</h1>
-        <p className="login-lede">
-          Bank console for sending messages your customers can check against the registry.
-        </p>
+        <h1 className="login-title">Admin sign in</h1>
+        <p className="login-lede">For bank staff. Visitors can use the demo without an account.</p>
+
+        {notice && <p className="error" role="alert">{notice}</p>}
 
         <form onSubmit={submit} className="stack">
           <label className="field">
@@ -49,9 +49,16 @@ export function Login() {
             />
           </label>
           {error && <p className="error" role="alert">{error}</p>}
-          <button className="btn btn-primary" disabled={busy}>
-            {busy ? "Signing in…" : "Sign in"}
-          </button>
+          <div className="row">
+            <button className="btn btn-primary" disabled={busy}>
+              {busy ? "Signing in…" : "Sign in"}
+            </button>
+            {onBack && (
+              <button type="button" className="btn" onClick={onBack}>
+                Back to demo
+              </button>
+            )}
+          </div>
         </form>
 
         {USING_EMULATORS && (

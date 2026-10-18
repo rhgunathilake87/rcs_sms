@@ -20,20 +20,29 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Admins can read and edit their institution's profile,
-    // but can never change their own "verified" status.
+    // Any signed-in visitor (admin or guest) can read the bank's public profile
+    // (name, logo, sender ID) for the preview. Only admins can edit it, and never
+    // their own "verified" status.
     match /institutions/{institutionId} {
-      allow read: if isAdminOf(institutionId);
+      allow read: if signedIn();
       allow update: if isAdminOf(institutionId)
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verified']);
       allow create, delete: if false;
     }
 
-    // Live registry monitor: admins read their own institution's hashes.
+    // Registry monitor:
+    //  - admins read all of their institution's entries
+    //  - guests read only the entries they created themselves (no one else's phone numbers)
     // Only the Cloud Function writes here.
     match /messageRegistry/{hash} {
-      allow read: if isAdminOf(resource.data.institutionId);
+      allow read: if isAdminOf(resource.data.institutionId)
+        || (signedIn() && resource.data.createdByUid == request.auth.uid);
       allow write: if false;
+    }
+
+    // Guest rate-limit counters: server only.
+    match /guestUsage/{uid} {
+      allow read, write: if false;
     }
   }
 }

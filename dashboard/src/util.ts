@@ -56,3 +56,13 @@ export function smsSegments(text: string): { parts: number; perPart: number; uni
   if (len <= single) return { parts: len === 0 ? 0 : 1, perPart: single, unicode };
   return { parts: Math.ceil(len / multi), perPart: multi, unicode };
 }
+
+/**
+ * Turns a Google Drive share link into a direct-download link.
+ * https://drive.google.com/file/d/<ID>/view?usp=sharing -> https://drive.google.com/uc?export=download&id=<ID>
+ * Other links are returned unchanged.
+ */
+export function directDownloadUrl(url: string): string {
+  const m = /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]+)/.exec(url);
+  return m ? `https://drive.google.com/uc?export=download&id=${m[1]}` : url;
+}
