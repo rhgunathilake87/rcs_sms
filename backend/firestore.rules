@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function adminDoc() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function isAdminOf(institutionId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && adminDoc().data.institutionId == institutionId;
+    }
+
+    // Each admin can read only their own admin record.
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Admins can read and edit their institution's profile,
+    // but can never change their own "verified" status.
+    match /institutions/{institutionId} {
+      allow read: if isAdminOf(institutionId);
+      allow update: if isAdminOf(institutionId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verified']);
+      allow create, delete: if false;
+    }
+
+    // Live registry monitor: admins read their own institution's hashes.
+    // Only the Cloud Function writes here.
+    match /messageRegistry/{hash} {
+      allow read: if isAdminOf(resource.data.institutionId);
+      allow write: if false;
+    }
+  }
+}

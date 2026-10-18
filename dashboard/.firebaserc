@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "rcs-sms-e803f",
+    "prod": "rcs-sms-e803f"
+  }
+}

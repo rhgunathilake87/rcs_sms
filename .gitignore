@@ -1,0 +1,22 @@
+# secrets — never commit
+.secret.local
+.env.production
+*.keystore
+*.jks
+service-account*.json
+
+# Node / Firebase
+node_modules/
+dist/
+lib/
+.firebase/
+*.log
+
+# Android
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.cxx/

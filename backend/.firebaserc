@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "demo-verified-sms",
+    "prod": "rcs-sms-e803f"
+  },
+  "targets": {},
+  "etags": {}
+}
