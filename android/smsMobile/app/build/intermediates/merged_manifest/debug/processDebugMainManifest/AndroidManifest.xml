@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
     <permission
         android:name="com.universl.rcs_sms.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"

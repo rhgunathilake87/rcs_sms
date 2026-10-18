@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import android.graphics.Color;
+import android.view.View;
+import android.widget.TextView;
 
 public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHolder> {
 
@@ -58,7 +61,32 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHolder> {
                         .format(new Date(sms.getTimestamp()))
         );
 
-        holder.status.setText(sms.getVerificationStatus());
+        String status = sms.getVerificationStatus();
+
+        if ("VERIFIED".equals(status)) {
+            holder.status.setText("✓ Verified");
+            holder.status.setTextColor(Color.rgb(22, 163, 74));
+
+        } else if ("INVALID".equals(status)) {
+            holder.status.setText("✗ Invalid — not verified");
+            holder.status.setTextColor(Color.rgb(220, 38, 38));
+
+        } else if ("EXPIRED".equals(status)) {
+            holder.status.setText("✗ Expired — not verified");
+            holder.status.setTextColor(Color.rgb(220, 38, 38));
+
+        } else if ("CHECKING".equals(status)) {
+            holder.status.setText("⏳ Checking...");
+            holder.status.setTextColor(Color.GRAY);
+
+        } else if (status != null && status.startsWith("UNAVAILABLE")) {
+            holder.status.setText("⚠ Verification unavailable");
+            holder.status.setTextColor(Color.rgb(180, 120, 0));
+
+        } else {
+            holder.status.setText("○ Not verified");
+            holder.status.setTextColor(Color.GRAY);
+        }
 
         boolean hasInstitution =
                 !sms.getInstitutionName().isEmpty()

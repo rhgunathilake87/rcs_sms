@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestPhoneNumberPermission();
         setContentView(R.layout.activity_main);
 
         mobileNumberInput = findViewById(R.id.mobileNumberInput);
@@ -183,49 +182,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalArgumentException e) {
             mobileNumberInput.setError(
                     "Enter a valid mobile number"
-            );
-        }
-    }
-
-    private String getPhoneNumberFromSim() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(
-                    android.Manifest.permission.READ_PHONE_NUMBERS)
-                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                return null;
-            }
-        }
-
-        try {
-            TelephonyManager telephonyManager =
-                    (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-
-            if (telephonyManager != null) {
-                String number = telephonyManager.getLine1Number();
-
-                if (!TextUtils.isEmpty(number)) {
-                    return number;
-                }
-            }
-        } catch (SecurityException e) {
-            // Permission is missing.
-        }
-
-        return null;
-    }
-
-    private void requestPhoneNumberPermission() {
-        if (android.os.Build.VERSION.SDK_INT >=
-                android.os.Build.VERSION_CODES.O &&
-                checkSelfPermission(
-                        android.Manifest.permission.READ_PHONE_NUMBERS)
-                        != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.READ_PHONE_NUMBERS
-                    },
-                    200
             );
         }
     }
