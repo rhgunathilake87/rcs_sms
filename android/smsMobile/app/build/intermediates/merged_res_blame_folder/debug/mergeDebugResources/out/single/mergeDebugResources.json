@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\menu_menu_bottom_nav.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\menu\\menu_bottom_nav.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-mdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-hdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\layout_item_sms.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\layout\\item_sms.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-mdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\drawable_bg_search_card.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\drawable\\bg_search_card.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "com.universl.rcs_sms.app-debug-32:/layout_item_sms.xml.flat",
+        "source": "com.universl.rcs_sms.app-main-34:/layout/item_sms.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\drawable_bg_edittext.xml.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\drawable\\bg_edittext.xml"
+    },
+    {
+        "merged": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-debug-32:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\USER\\.gradle\\daemon\\8.7\\com.universl.rcs_sms.app-main-34:\\mipmap-xhdpi\\ic_launcher.webp"
+    }
+]

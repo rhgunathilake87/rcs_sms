@@ -1,0 +1,32 @@
+R_DEF: Internal format may change without notice
+local
+color app_main
+color button_pressed
+color button_small
+color button_stroke
+color white
+dimen activity_horizontal_margin
+dimen activity_vertical_margin
+drawable bg_edittext
+drawable bg_search_card
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id inboxMessage
+id institutionId
+id institutionLogoUrl
+id institutionName
+id institutionVerified
+id smsBody
+id smsDate
+id smsRecyclerView
+id smsSender
+id smsStatus
+id verifySmsButton
+layout activity_main
+layout item_sms
+menu menu_bottom_nav
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style AppBaseTheme
+style AppTheme

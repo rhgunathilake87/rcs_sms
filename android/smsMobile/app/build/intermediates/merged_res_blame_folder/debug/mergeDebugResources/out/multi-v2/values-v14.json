@@ -1,0 +1,28 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.universl.rcs_sms.app-mergeDebugResources-30:/values-v14/values-v14.xml",
+            "map": [
+                {
+                    "source": "F:\\UniverSL\\SmsVerify\\rcs_sms\\android\\smsMobile\\app\\src\\main\\res\\values-v14\\styles.xml",
+                    "from": {
+                        "startLines": "6",
+                        "startColumns": "4",
+                        "startOffsets": "225",
+                        "endLines": "8",
+                        "endColumns": "12",
+                        "endOffsets": "370"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "149"
+                    }
+                }
+            ]
+        }
+    ]
+}

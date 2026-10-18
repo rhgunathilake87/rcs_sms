@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_main">#00CC33</color>
+    <color name="button_pressed">#00FF00</color>
+    <color name="button_small">#006633</color>
+    <color name="button_stroke">#006633</color>
+    <color name="white">#FFFFFF</color>
+    <dimen name="activity_horizontal_margin">8dp</dimen>
+    <dimen name="activity_vertical_margin">8dp</dimen>
+    <string name="app_name">RCS SMSS</string>
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+        
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        
+    </style>
+</resources>
