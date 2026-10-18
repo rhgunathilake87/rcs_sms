@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import android.util.Log;
 
 public class VerificationApiClient {
 
@@ -26,6 +27,8 @@ public class VerificationApiClient {
 
     private static final int CONNECT_TIMEOUT_MS = 10000;
     private static final int READ_TIMEOUT_MS = 10000;
+
+    private static final String TAG = "VerificationApiClient";
 
     private final ExecutorService executor =
             Executors.newSingleThreadExecutor();
@@ -51,77 +54,82 @@ public class VerificationApiClient {
             Callback callback
     ) {
         executor.execute(() -> {
+            Log.d(TAG, "Starting hash verification request");
+            Log.d(TAG, "Endpoint: " + VERIFY_HASH_URL);
+
             HttpURLConnection connection = null;
 
             try {
                 URL url = new URL(VERIFY_HASH_URL);
-                connection =
-                        (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");
-                connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
-                connection.setReadTimeout(READ_TIMEOUT_MS);
+                connection.setRequestProperty(
+                        "Content-Type", "application/json; charset=UTF-8"
+                );
+                connection.setRequestProperty(
+                        "Accept", "application/json"
+                );
                 connection.setDoOutput(true);
 
-                connection.setRequestProperty(
-                        "Content-Type",
-                        "application/json; charset=UTF-8"
-                );
-                connection.setRequestProperty(
-                        "Accept",
-                        "application/json"
-                );
+                JSONObject requestJson = new JSONObject();
+                requestJson.put("hash", hash);
+                requestJson.put("recipient", recipient);
 
-                JSONObject requestBody = new JSONObject();
-                requestBody.put("hash", hash);
-                requestBody.put("recipient", recipient);
+                Log.d(TAG, "Request JSON created");
+                Log.d(TAG, "Request fields: hash, recipient");
 
-                byte[] requestBytes = requestBody.toString()
-                        .getBytes(StandardCharsets.UTF_8);
-
-                try (OutputStream output =
-                             connection.getOutputStream()) {
-                    output.write(requestBytes);
+                try (java.io.OutputStream os = connection.getOutputStream()) {
+                    os.write(requestJson.toString().getBytes(
+                            java.nio.charset.StandardCharsets.UTF_8
+                    ));
                 }
 
-                int responseCode =
-                        connection.getResponseCode();
+                Log.d(TAG, "Request sent; waiting for backend response");
 
-                InputStream responseStream =
-                        responseCode >= 200 && responseCode < 300
+                int responseCode = connection.getResponseCode();
+                Log.d(TAG, "HTTP response code: " + responseCode);
+
+                java.io.InputStream responseStream =
+                        responseCode >= 200 && responseCode < 400
                                 ? connection.getInputStream()
                                 : connection.getErrorStream();
 
+                if (responseStream == null) {
+                    throw new java.io.IOException(
+                            "Backend returned HTTP " + responseCode
+                                    + " without a response body"
+                    );
+                }
+
                 StringBuilder responseText = new StringBuilder();
 
-                if (responseStream != null) {
-                    try (InputStream input = responseStream;
-                         BufferedReader reader =
-                                 new BufferedReader(
-                                         new InputStreamReader(
-                                                 input,
-                                                 StandardCharsets.UTF_8
-                                         )
-                                 )) {
-
-                        String line;
-
-                        while ((line = reader.readLine()) != null) {
-                            responseText.append(line);
-                        }
+                try (java.io.BufferedReader reader =
+                             new java.io.BufferedReader(
+                                     new java.io.InputStreamReader(
+                                             responseStream,
+                                             java.nio.charset.StandardCharsets.UTF_8
+                                     ))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        responseText.append(line);
                     }
                 }
 
+                Log.d(TAG, "HTTP Response Code: " + responseCode);
+                Log.d(TAG, "Full Response Body: " + responseText);
+
                 if (responseCode < 200 || responseCode >= 300) {
-                    throw new Exception(
-                            "Server returned HTTP "
-                                    + responseCode
+                    Log.e(TAG, "Backend returned a non-success HTTP status");
+                    throw new java.io.IOException(
+                            "Server returned HTTP " + responseCode
                     );
                 }
 
                 JSONObject json = new JSONObject(responseText.toString());
 
                 String status = json.optString("status", "UNKNOWN");
+                Log.d(TAG, "Parsed verification status: " + status);
 
                 if (!status.equals("VERIFIED")
                         && !status.equals("INVALID")
@@ -143,31 +151,44 @@ public class VerificationApiClient {
                     institutionVerified = institution.optBoolean("verified", false);
                 }
 
+                Log.d(TAG, "Institution object present: "
+                        + (institution != null));
+                Log.d(TAG, "Institution verified flag: "
+                        + institutionVerified);
+
                 final String result = status;
                 final String resultId = institutionId;
                 final String resultName = institutionName;
                 final String resultLogoUrl = logoUrl;
                 final boolean resultVerified = institutionVerified;
 
-                mainHandler.post(() -> callback.onSuccess(
-                        result,
-                        resultId,
-                        resultName,
-                        resultLogoUrl,
-                        resultVerified
-                ));
+                mainHandler.post(() -> {
+                    Log.d(TAG, "Delivering result to MainActivity callback");
+
+                    callback.onSuccess(
+                            result,
+                            resultId,
+                            resultName,
+                            resultLogoUrl,
+                            resultVerified
+                    );
+                });
 
             } catch (Exception e) {
-                mainHandler.post(
-                        () -> callback.onError(
-                                "Verification unavailable. "
-                                        + "Please try again."
+                Log.e(TAG, "Hash verification request failed: "
+                        + e.getClass().getSimpleName()
+                        + ": " + e.getMessage(), e);
+
+                mainHandler.post(() ->
+                        callback.onError(
+                                "Verification unavailable. Please try again."
                         )
                 );
 
             } finally {
                 if (connection != null) {
                     connection.disconnect();
+                    Log.d(TAG, "HTTP connection closed");
                 }
             }
         });
